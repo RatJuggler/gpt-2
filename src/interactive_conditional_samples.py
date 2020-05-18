@@ -8,6 +8,7 @@ import tensorflow as tf
 
 import model, sample, encoder
 
+
 def interact_model(
     model_name='124M',
     seed=None,
@@ -87,6 +88,6 @@ def interact_model(
                     print(text)
             print("=" * 80)
 
+
 if __name__ == '__main__':
     fire.Fire(interact_model)
-
