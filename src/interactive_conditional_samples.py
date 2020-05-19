@@ -8,13 +8,32 @@ import tensorflow as tf
 
 import model, sample, encoder
 
+# Test using the wikipedia description of London.
+raw_text = """
+London is the capital and largest city of England and the United Kingdom. Standing on the River Thames in the south-east of England,
+at the head of its 50-mile (80 km) estuary leading to the North Sea, London has been a major settlement for two millennia. Londinium
+was founded by the Romans. The City of London, London's ancient core − an area of just 1.12 square miles (2.9 km2) and colloquially
+known as the Square Mile − retains boundaries that closely follow its medieval limits. The City of Westminster is also an Inner
+London borough holding city status. London is governed by the Mayor of London and the London Assembly.
+"""
+
+# Test using the wikipedia description of a guinea pig.
+#raw_text = """
+# The guinea pig or domestic guinea pig (Cavia porcellus), also known as cavy or domestic cavy, is a species of rodent belonging to 
+# the family Caviidae and the genus Cavia. Despite their common name, guinea pigs are not native to Guinea, nor are they closely 
+# biologically related to pigs, and the origin of the name is still unclear. They originated in the Andes of South America, and 
+# studies based on biochemistry and hybridization suggest they are domesticated descendants of a closely related species of cavy such 
+# as C. tschudii, and therefore do not exist naturally in the wild. They were originally domesticated as livestock, as a source of 
+# food, and continue to be.
+# """
+
 
 def interact_model(
-    model_name='124M',
+    model_name='1558M',
     seed=None,
-    nsamples=1,
+    nsamples=10,
     batch_size=1,
-    length=None,
+    length=150,
     temperature=1,
     top_k=40,
     top_p=1,
@@ -70,23 +89,18 @@ def interact_model(
         ckpt = tf.train.latest_checkpoint(os.path.join(models_dir, model_name))
         saver.restore(sess, ckpt)
 
-        while True:
-            raw_text = input("Model prompt >>> ")
-            while not raw_text:
-                print('Prompt should not be empty!')
-                raw_text = input("Model prompt >>> ")
-            context_tokens = enc.encode(raw_text)
-            generated = 0
-            for _ in range(nsamples // batch_size):
-                out = sess.run(output, feed_dict={
-                    context: [context_tokens for _ in range(batch_size)]
-                })[:, len(context_tokens):]
-                for i in range(batch_size):
-                    generated += 1
-                    text = enc.decode(out[i])
-                    print("=" * 40 + " SAMPLE " + str(generated) + " " + "=" * 40)
-                    print(text)
-            print("=" * 80)
+        context_tokens = enc.encode(raw_text)
+        generated = 0
+        for _ in range(nsamples // batch_size):
+            out = sess.run(output, feed_dict={
+                context: [context_tokens for _ in range(batch_size)]
+            })[:, len(context_tokens):]
+            for i in range(batch_size):
+                generated += 1
+                text = enc.decode(out[i])
+                print("=" * 40 + " SAMPLE " + str(generated) + " " + "=" * 40)
+                print(text)
+        print("=" * 80)
 
 
 if __name__ == '__main__':
