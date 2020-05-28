@@ -13,8 +13,8 @@ Just playing around with this:
 - Fix some of the compatibility issues highlighted.
 
 ## Running
-Instead of using my usual Linux Laptop I tested this on my Windows Desktop PC using the latest Windows 10 WSL (Windows Subsystem 
-for Linux) 2 with Ubuntu 20.04 LTS.
+Instead of using my usual Linux Laptop I tested this on my Windows Desktop PC using the latest Windows 10 WSL 2 (Windows Subsystem 
+for Linux) with Ubuntu 20.04 LTS and Windows Docker Desktop.
 
 Open a linux shell to install pip3 (Python3 package installer), clone this repository and install the requirements:
 ```
@@ -27,7 +27,7 @@ $ echo 'PATH="$PATH:$HOME/.local/bin"' >> ~/.profile
 Since we updated the PATH in .profile we need to exit the shell then restart it.
 
 We can then download the model we want (I'm starting with the smallest), build and run the docker image and finally run the 
-generation:
+generation (ignore any compatibility warnings due to using the older V1 TensorFlow):
 ```
 $ cd ~/gpt-2
 $ python3 download_model.py 124M
@@ -36,9 +36,9 @@ $ docker run -it -v ~/gpt-2/:/gpt-2 gpt-2:0.1 bash
 .../gpt-t# python3 src/generate_unconditional_samples.py
 .../gpt-t# python3 src/interactive_conditional_samples.py
 ```
-Remember you are now in the Docker shell so make to exit that before making any other changes.
+Remember you are now in the Docker shell so make sure to exit that before making any other changes.
 
-The large model is just over 6GB should you want to download and run with that:
+The large model is just over 6GB should you want to download and run with that (there is no need to rebuild the docker image):
 ```
 $ python3 download_model.py 1558M
 $ docker run -it -v ~/gpt-2/:/gpt-2 gpt-2:0.1 bash
