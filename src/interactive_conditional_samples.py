@@ -29,7 +29,7 @@ London borough holding city status. London is governed by the Mayor of London an
 
 
 def interact_model(
-    model_name='1558M',
+    model_name='124M',
     seed=None,
     nsamples=10,
     batch_size=1,
